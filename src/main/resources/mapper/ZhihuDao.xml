@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liangjies.zhihu.dao.ZhihuDao">
+
+    <resultMap type="org.liangjies.zhihu.entity.Zhihu" id="ZhihuMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="question" column="question" jdbcType="INTEGER"/>
+        <result property="answer" column="answer" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="OTHER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ZhihuMap">
+        select
+          id, question, answer, title, content
+        from zhihu.zhihu
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ZhihuMap">
+        select
+          id, question, answer, title, content
+        from zhihu.zhihu
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ZhihuMap">
+        select
+          id, question, answer, title, content
+        from zhihu.zhihu
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="question != null">
+                and question = #{question}
+            </if>
+            <if test="answer != null">
+                and answer = #{answer}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="content != null">
+                and content = #{content}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryByAnswer" resultType="org.liangjies.zhihu.entity.Zhihu">
+        select
+          id, question, answer, title, content
+        from zhihu.zhihu
+        where answer=#{answer}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into zhihu.zhihu(question, answer, title, content)
+        values (#{question}, #{answer}, #{title}, #{content})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update zhihu.zhihu
+        <set>
+            <if test="question != null">
+                question = #{question},
+            </if>
+            <if test="answer != null">
+                answer = #{answer},
+            </if>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from zhihu.zhihu where id = #{id}
+    </delete>
+
+</mapper>
